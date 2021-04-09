@@ -124,7 +124,7 @@ class DroneDataset(Dataset):
         img = T.functional.to_tensor(img)
         
         mask = Image.open(self.mask_path+self.sample_ids[Id]+'.png')
-        mask = ImageOps.scale(mask,0.25,Image.NEAREST)
+        mask = scale(mask,0.25,Image.NEAREST)
         mask = np.array(mask)
         mask = torch.from_numpy(mask).long()
         
