@@ -1,14 +1,21 @@
 ﻿<!doctype html>
   <head>
+    <meta charset="UTF-8">
     <title>Трубы</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script type="text/javascript" src="../static/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="../static/js/script.js"></script>
   </head>
   <body>
     <div class="container">
       <h1>WIP анализатор труб</h1>
-      <p>Плейсхолдер.
-     </p>
-     <input type="file" accept="image/*">
-     <input type="submit" value="Загрузить">
-    </div>
+    <form id="upload-container" method="POST" action="send.php">
+      <img id="upload-image" src="../static/images/upload.svg">
+      <div>
+        <input id="file-input" type="file" name="file" multiple>
+        <label for="file-input">Выберите файл</label>
+        <span>или перетащите его сюда</span>
+      </div>
+    </form>
   </body>
 </html>
