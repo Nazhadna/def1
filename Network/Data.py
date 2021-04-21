@@ -35,7 +35,10 @@ class DroneDataset(Dataset):
     def __getitem__(self,Id):
         img = Image.open(self.img_path+self.sample_ids[Id]+'.jpg')
         img = scale(img,0.25,Image.NEAREST)
-        img = T.functional.to_tensor(img)
+        mean=[0.485, 0.456, 0.406] #Эти числа всё время встречаются в документации PyTorch
+        std=[0.229, 0.224, 0.225] #Поэтому использованы именно они
+        t = T.Compose([T.ToTensor(),T.Normalize(mean,std)])
+        img = t(img)
         
         mask = Image.open(self.mask_path+self.sample_ids[Id]+'.png')
         mask = scale(mask,0.25,Image.NEAREST)
