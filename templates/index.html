@@ -9,7 +9,7 @@
   <body>
     <div class="container">
       <h1>WIP анализатор труб</h1>
-    <form id="upload-container" method="POST" action="send.php">
+    <form id="upload-container" enctype="multipart/form-data" method="POST" action = "http://localhost:5000/uploader">
       <img id="upload-image" src="../static/images/upload.svg">
       <div>
         <input id="file-input" type="file" name="file" multiple>

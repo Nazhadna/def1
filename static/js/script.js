@@ -18,8 +18,8 @@ $(document).ready(function(){
 	});
 
 	dropZone.on('dragleave', function(e) {
-		let dx = e.pageX - dropZone.offset().left;
-		let dy = e.pageY - dropZone.offset().top;
+		dx = e.pageX - dropZone.offset().left;
+		dy = e.pageY - dropZone.offset().top;
 		if ((dx < 0) || (dx > dropZone.width()) || (dy < 0) || (dy > dropZone.height())) {
 			dropZone.removeClass('dragover');
 		}
@@ -27,34 +27,55 @@ $(document).ready(function(){
 
 	dropZone.on('drop', function(e) {
 		dropZone.removeClass('dragover');
-		let files = e.originalEvent.dataTransfer.files;
+		files = e.originalEvent.dataTransfer.files;
 		sendFiles(files);
 	});
 
 	$('#file-input').change(function() {
-		let files = this.files;
+		files = this.files;
 		sendFiles(files);
 	});
 
 
 	function sendFiles(files) {
-		let maxFileSize = 5242880;
-		let Data = new FormData();
-		$(files).each(function(index, file) {
-			if ((file.size <= maxFileSize) && ((file.type == 'image/png') || (file.type == 'image/jpeg'))) {
-				Data.append('images[]', file);
-			}
-		});
+		// let maxFileSize = 5242880;
+		var Data = new FormData();
+		var files = $('#file')[0].files;
+		// $(files).each(function(index, file) {
+		// 	if ((file.size <= maxFileSize) && ((file.type == 'image/png') || (file.type == 'image/jpeg'))) {
+		// 		Data.append('images[]', file);
+		// 	}
+		// });
+		if (files.length > 0) {
+			Data.append('file', files[0]);
+			$.ajax({
+				url: 'http://localhost:5000/uploader',
+				type: 'POST',
+				data: Data,
+				contentType: false,
+				processData: false,
+				success: function(response){
+					if(response !=0){
+						alert('Successfully uploaded file')
+					}else{
+						alert('File not uploaded');
+					}
+				},
+			});
 
-		$.ajax({
-			url: dropZone.attr('action'),
-			type: dropZone.attr('method'),
-			data: Data,
-			contentType: false,
-			processData: false,
-			success: function(data) {
-				alert ('Файлы были успешно загружены!');
-			}
-		});
+		}else{
+			alert("Please select a file.");
+		}
+
+		// $.ajax({
+		// 	url: dropZone.attr('action'),
+		// 	type: dropZone.attr('method'),
+		// 	data: Data,
+		// 	contentType: false,
+		// 	processData: false,
+		// 	success: function(data) {
+		// 		alert ('Файлы были успешно загружены!');
+		// 	}
+		// });
 	}
 })
