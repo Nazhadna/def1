@@ -10,6 +10,12 @@ app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_NAME'] = UPLOAD_NAME
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+@app.before_request
+def before_request():
+    if 'localhost/upload' in request.host_url:
+        app.jinja_env.cache = {}
 
 @app.route('/')
 def upload():
