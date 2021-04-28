@@ -3,6 +3,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision import transforms as T
 
 
 class Block(nn.Module):
@@ -48,12 +49,12 @@ class Decoder(nn.Module):
     
     def crop(self, enc_ftrs, x):
         _, _, H, W = x.shape
-        enc_ftrs   = torchvision.transforms.CenterCrop([H, W])(enc_ftrs)
+        enc_ftrs   = T.CenterCrop([H, W])(enc_ftrs)
         return enc_ftrs
 
 
 class UNet(nn.Module):
-    def __init__(self, enc_chs=(3,64,128,256,512,1024), dec_chs=(1024, 512, 256, 128, 64), num_class=1, retain_dim=False, out_sz=(572,572)):
+    def __init__(self, enc_chs=(3,64,128,256,512,1024), dec_chs=(1024, 512, 256, 128, 64), num_class=1, retain_dim=False, out_sz=(1000,1500)):
         super().__init__()
         self.encoder     = Encoder(enc_chs)
         self.decoder     = Decoder(dec_chs)
