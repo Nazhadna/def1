@@ -57,14 +57,14 @@ class DroneDataset(Dataset):
         return len(self.sample_ids)
     
     def __getitem__(self,Id):
-        img = Image.open(self.img_path+self.sample_ids[Id]+'.jpg')
+        img = Image.open(self.img_path+self.sample_ids[Id])
         img = scale(img,0.25,Image.NEAREST)
         mean=[0.485, 0.456, 0.406] #Эти числа всё время встречаются в документации PyTorch
         std=[0.229, 0.224, 0.225] #Поэтому использованы именно они
         t = T.Compose([T.ToTensor(),T.Normalize(mean,std)])
         img = t(img)
         
-        mask = Image.open(self.mask_path+self.sample_ids[Id]+'.png')
+        mask = Image.open(self.mask_path+self.sample_ids[Id])
         mask = scale(mask,0.25,Image.NEAREST)
         mask = np.array(mask)
         mask = torch.from_numpy(mask).long()
