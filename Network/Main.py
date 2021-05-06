@@ -16,3 +16,8 @@ class Segmenter:
         with torch.no_grad():
             res = self.network(img)
         save_img(res,self.img_path+img_name)
+        
+        
+if __name__ == '__main__':
+    seg = Segmenter()
+    seg('000')
