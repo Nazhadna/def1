@@ -18,7 +18,7 @@ class Block(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, chs=(3,64,128,256,512,1024)):
+    def __init__(self, chs=(3,16,32,64,128,256)):
         super().__init__()
         self.enc_blocks = nn.ModuleList([Block(chs[i], chs[i+1]) for i in range(len(chs)-1)])
         self.pool       = nn.MaxPool2d(2)
@@ -33,7 +33,7 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, chs=(1024, 512, 256, 128, 64)):
+    def __init__(self, chs=(256, 128, 64, 32, 16)):
         super().__init__()
         self.chs         = chs
         self.upconvs    = nn.ModuleList([nn.ConvTranspose2d(chs[i], chs[i+1], 2, 2) for i in range(len(chs)-1)])
@@ -54,7 +54,7 @@ class Decoder(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, enc_chs=(3,64,128,256,512,1024), dec_chs=(1024, 512, 256, 128, 64), num_class=1, retain_dim=False, out_sz=(1000,1500)):
+    def __init__(self, enc_chs=(3,16,32,64,128,256), dec_chs=(256, 128, 64, 32, 16), num_class=1, retain_dim=False, out_sz=(1000,1500)):
         super().__init__()
         self.encoder     = Encoder(enc_chs)
         self.decoder     = Decoder(dec_chs)
