@@ -2,7 +2,7 @@ from Data import *
 from Training import *
 from Simple_Unet import *
 
-
+'''
 class Segmenter:
     def __init__(self,img_path = '',net_path = 'dict.pth',**kwargs):
         self.img_path = img_path
@@ -23,3 +23,16 @@ class Segmenter:
 if __name__ == '__main__':
     seg = Segmenter(enc_chs=(3,16,32,64,128,256), dec_chs=(256, 128, 64, 32, 16), num_class=23)
     seg('000')
+'''
+
+if __name__ == '__main__':
+    img = load_img(bytes)
+    h,w = img.shape[2],img.shape[3]
+    net = UNet(num_class=23,retain_dim=True,out_sz=(h,w))
+    net.load_state_dict(torch.load(net_path))
+    device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
+    net = net.to(device)
+    net.eval()
+    res = net(img)
+    save_img(res,'res.png')
+    
