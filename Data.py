@@ -12,14 +12,6 @@ from torchvision import transforms as T
 
 from PIL import Image
 from PIL.ImageOps import scale
-
-
-def get_names(path):
-    names = []
-    for _,_,files in os.walk(path):
-        for file in files:
-            names.append(file.split('.')[0])
-    return pd.DataFrame({'id':names}, index = np.arange(len(names)))
     
     
 def load_img(bytes):
