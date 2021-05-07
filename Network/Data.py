@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import os
+import io
 
 import torch
 import torch.nn.functional as F
@@ -21,8 +22,8 @@ def get_names(path):
     return pd.DataFrame({'id':names}, index = np.arange(len(names)))
     
     
-def load_img(path):
-    img = Image.open(path+'.jpg')
+def load_img(bytes):
+    img = Image.open(io.BytesIO(bytes))
     img = scale(img,0.25,Image.NEAREST)
     mean=[0.485, 0.456, 0.406] #Эти числа всё время встречаются в документации PyTorch
     std=[0.229, 0.224, 0.225] #Поэтому использованы именно они
@@ -32,6 +33,7 @@ def load_img(path):
     img = img.reshape(1,sh[0],sh[1],sh[2])
     return img
     
+    
 def save_img(img,path):
     nc = img.shape[1]
     img = torch.argmax(F.softmax(img, dim=1), dim=1)
@@ -40,7 +42,7 @@ def save_img(img,path):
     img = img/nc*255
     img = np.uint8(img)
     img = Image.fromarray(img)
-    img.save(path+'.png')    
+    img.save(path)    
     
 
 class DroneDataset(Dataset):
