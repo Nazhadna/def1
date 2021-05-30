@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import os
+import io
 
 import torch
 import torch.nn.functional as F
@@ -13,7 +14,7 @@ from PIL import Image
 from PIL.ImageOps import scale
     
     
-def load_img(path):
+def load_img(bytes):
     img = Image.open(io.BytesIO(bytes))
     img = img.convert('L')
     mean=[0.449] #Эти числа всё время встречаются в документации PyTorch
@@ -46,7 +47,7 @@ def save_img(img,path):
     b[b!=255] = 0
     b = Image.fromarray(b)
     img = Image.merge('RGB',(r,g,b))
-    img.save(path+'.png')    
+    img.save(path)    
     
 
 class DroneDataset(Dataset):
