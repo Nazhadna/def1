@@ -1,3 +1,7 @@
+import torch
+import torch.nn.functional as F
+import numpy as np
+
 def pixel_accuracy(output, mask):
     with torch.no_grad():
         output = torch.argmax(F.softmax(output, dim=1), dim=1)
