@@ -18,7 +18,7 @@ class Block(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, chs=(3,16,32,64,128,256)):
+    def __init__(self, chs=(1,16,32,64,128,256)):
         super().__init__()
         self.enc_blocks = nn.ModuleList([Block(chs[i], chs[i+1]) for i in range(len(chs)-1)])
         self.pool       = nn.MaxPool2d(2)
@@ -54,19 +54,16 @@ class Decoder(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, enc_chs=(3,16,32,64,128,256), dec_chs=(256, 128, 64, 32, 16), num_class=1, retain_dim=False, out_sz=(1000,1500)):
+    def __init__(self, enc_chs=(1,16,32,64,128,256), dec_chs=(256, 128, 64, 32, 16), num_class=1):
         super().__init__()
         self.encoder     = Encoder(enc_chs)
         self.decoder     = Decoder(dec_chs)
         self.head        = nn.Conv2d(dec_chs[-1], num_class, 1)
-        self.retain_dim  = retain_dim
-        if retain_dim:
-            self.out_sz = out_sz
 
     def forward(self, x):
+        out_sz = (x.shape[2],x.shape[3])
         enc_ftrs = self.encoder(x)
         out      = self.decoder(enc_ftrs[::-1][0], enc_ftrs[::-1][1:])
         out      = self.head(out)
-        if self.retain_dim:
-            out = F.interpolate(out, self.out_sz)
+        out = F.interpolate(out, out_sz)
         return out
