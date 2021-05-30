@@ -66,20 +66,38 @@ class DroneDataset(Dataset):
         
         
 class PipeDataset(Dataset):
-    def __init__(self,img_path,mask_path, sample_ids):
+    def __init__(self,img_path,mask_path, sample_ids,transfrom=None):
         self.img_path = img_path
         self.mask_path = mask_path
         self.sample_ids = sample_ids
+        self.transform = transform
+        
+    def __len__(self):
+        return len(self.sample_ids)
         
     def __getitem__(self,idx):
-        img = Image.open(self.img_path+self.sample_ids[idx])
-        mean=[0.485, 0.456, 0.406] #Эти числа всё время встречаются в документации PyTorch
-        std=[0.229, 0.224, 0.225] #Поэтому использованы именно они
+        img = Image.open(self.img_path+self.sample_ids[idx]+'.png')
+        mask = np.load(self.mask_path+self.sample_ids[idx]+'.npy')
+        if self.transform is not None:
+            img = np.array(img)
+            aug = self.transform(image=img,mask=mask)
+            img = aug['image']
+            mask = aug['mask']
+        mean=[0.449] #Эти числа всё время встречаются в документации PyTorch
+        std=[0.226] #Поэтому использованы именно они
         t = T.Compose([T.ToTensor(),T.Normalize(mean,std)])
         img = t(img)
-        
-        mask = np.load(self.mask_path+self.sample_ids[idx])
         mask = torch.from_numpy(mask).long()
         
         return img,mask
+        
+        
+'''
+By default, the following transforms are used:
+train_transform = A.Compose([A.HorizontalFlip(p=0.5),A.VerticalFlip(p=0.5),
+                             A.RandomBrightnessContrast((0,0.5),(0,0.5)),
+                             A.GaussNoise()])
+test_transform = A.Compose([A.HorizontalFlip(p=0.5),A.VerticalFlip(p=0.5)])
+'''
+
     

@@ -34,7 +34,7 @@ def upload_file():
             img_bytes = file.read()
             img = load_img(img_bytes)
             h,w = img.shape[2],img.shape[3]
-            net = UNet(num_class=23,retain_dim=True,out_sz=(h,w))
+            net = UNet(num_class=5)
             net.load_state_dict(torch.load('dict.pth'))
             net = net.to('cpu')
             net.eval()
