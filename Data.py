@@ -49,7 +49,7 @@ def save_img(img,path):
     img = Image.merge('RGB',(r,g,b))
     img.save(path)    
     
-
+    
 class DroneDataset(Dataset):
     """
     Загрузчик для данных, на которых тестиуется сеть,
