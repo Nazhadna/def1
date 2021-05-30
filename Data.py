@@ -14,10 +14,10 @@ from PIL.ImageOps import scale
     
     
 def load_img(path):
-    img = Image.open(path+'.jpg')
-    img = scale(img,0.25,Image.NEAREST)
-    mean=[0.485, 0.456, 0.406] #Эти числа всё время встречаются в документации PyTorch
-    std=[0.229, 0.224, 0.225] #Поэтому использованы именно они
+    img = Image.open(io.BytesIO(bytes))
+    img = img.convert('L')
+    mean=[0.449] #Эти числа всё время встречаются в документации PyTorch
+    std=[0.226] #Поэтому использованы именно они
     t = T.Compose([T.ToTensor(),T.Normalize(mean,std)])
     img = t(img)
     sh = img.shape
