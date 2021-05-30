@@ -47,5 +47,9 @@ def upload_file():
         except:
             return jsonify({'error': 'error during prediction'})
 
+@app.route('/feedback')
+def feedback():
+    return render_template('feedback.html')
+
 if __name__ == '__main__':
     app.run()
