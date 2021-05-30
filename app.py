@@ -39,6 +39,7 @@ def upload_file():
             net = net.to('cpu')
             net.eval()
             res = net(img)
+            torch.save(res,'res.pth')
             save_img(res,'static/uploads/res.png')
             # tensor = transform_image(img_bytes)
             # prediction = get_prediction(tensor)
