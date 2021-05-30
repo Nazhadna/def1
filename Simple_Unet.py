@@ -49,7 +49,7 @@ class Decoder(nn.Module):
     
     def crop(self, enc_ftrs, x):
         _, _, H, W = x.shape
-        enc_ftrs   = torchvision.transforms.CenterCrop([H, W])(enc_ftrs)
+        enc_ftrs   = T.CenterCrop([H, W])(enc_ftrs)
         return enc_ftrs
 
 
