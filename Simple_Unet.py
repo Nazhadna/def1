@@ -9,9 +9,9 @@ from torchvision import transforms as T
 class Block(nn.Module):
     def __init__(self, in_ch, out_ch):
         super().__init__()
-        self.conv1 = nn.Conv2d(in_ch, out_ch, 3)
+        self.conv1 = nn.Conv2d(in_ch, out_ch, 3, padding = 1, padding_mode = 'replicate')
         self.relu  = nn.ReLU()
-        self.conv2 = nn.Conv2d(out_ch, out_ch, 3)
+        self.conv2 = nn.Conv2d(out_ch, out_ch, 3, padding = 1, padding_mode = 'replicate')
     
     def forward(self, x):
         return self.conv2(self.relu(self.conv1(x)))
@@ -61,9 +61,7 @@ class UNet(nn.Module):
         self.head        = nn.Conv2d(dec_chs[-1], num_class, 1)
 
     def forward(self, x):
-        out_sz = (x.shape[2],x.shape[3])
         enc_ftrs = self.encoder(x)
         out      = self.decoder(enc_ftrs[::-1][0], enc_ftrs[::-1][1:])
         out      = self.head(out)
-        out = F.interpolate(out, out_sz)
         return out
