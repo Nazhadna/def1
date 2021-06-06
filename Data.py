@@ -16,6 +16,7 @@ from PIL.ImageOps import scale
     
 def load_img(bytes):
     img = Image.open(io.BytesIO(bytes))
+    img.save('static/uploads/image.jpg')
     img = img.convert('L')
     mean=[0.449] #Эти числа всё время встречаются в документации PyTorch
     std=[0.226] #Поэтому использованы именно они
@@ -80,7 +81,7 @@ class DroneDataset(Dataset):
         
         
 class PipeDataset(Dataset):
-    def __init__(self,img_path,mask_path, sample_ids,transfrom=None):
+    def __init__(self,img_path,mask_path, sample_ids,transform=None):
         self.img_path = img_path
         self.mask_path = mask_path
         self.sample_ids = sample_ids

@@ -29,24 +29,24 @@ def upload_file():
             return jsonify({'error': 'no file'})
         if not allowed_file(file.filename):
             return jsonify({'error': 'format not supported'})
-
-        try:
-            img_bytes = file.read()
-            img = load_img(img_bytes)
-            h,w = img.shape[2],img.shape[3]
-            net = UNet(num_class=5)
-            net.load_state_dict(torch.load('dict.pth'))
-            net = net.to('cpu')
-            net.eval()
-            res = net(img)
-            torch.save(res,'res.pth')
-            save_img(res,'static/uploads/res.png')
-            # tensor = transform_image(img_bytes)
-            # prediction = get_prediction(tensor)
-            # data = {'prediction': prediction.item(), 'class_name': str(prediction.item())}
-            return render_template('result.html')
-        except:
-            return jsonify({'error': 'error during prediction'})
+        
+        # try:
+        img_bytes = file.read()
+        img = load_img(img_bytes)
+        h,w = img.shape[2],img.shape[3]
+        net = UNet(num_class=5)
+        net.load_state_dict(torch.load('dict.pth'))
+        net = net.to('cpu')
+        net.eval()
+        res = net(img)
+        torch.save(res,'res.pth')
+        save_img(res,'static/uploads/res.png')
+        # tensor = transform_image(img_bytes)
+        # prediction = get_prediction(tensor)
+        # data = {'prediction': prediction.item(), 'class_name': str(prediction.item())}
+        return render_template('result.html')
+        # except:
+        #     return jsonify({'error': 'error during prediction'})
 
 @app.route('/feedback')
 def feedback():

@@ -1,15 +1,18 @@
 <html>
     <body onload="pencil()">
         <h1>В разработке. Состав и качество работы функционала может не совпадать с ожиданиями, надеждами и мечтами ☺.</h1>
-        <form id=drawtype></form>
-        <p>[[[Тут селектор типа маски: ○Нефть ○Отверстие ○Ржавчина ○etc]]]</p>
-        <input type="radio" value="oil">Oil<input type="radio" value="hole">Hole<input type="radio" value="rust">Rust
+        <form id=drawtype>
+            <input type="radio" id="oil" name="fdbcktype" value="oil"><label for="oil" onclick="color('#0000FF')">Нефтепродукты</label>
+            <input type="radio" id="recess" name="fdbcktype" value="recess"><label for="recess" onclick="color('#FF0000')">Углубление</label>
+            <input type="radio" id="elongated_recess" name="fdbcktype" value="elongated_recess" onclick="color('#00FF00')"><label for="elongated_recess">Протяжённое углубление</label>
+            <input type="radio" id="rust" name="fdbcktype" value="rust"><label for="rust" onclick="color('#FF00FF')">Ржавчина</label>
+        </form>
         <p><table>
             <tr>
             <td>
-                <canvas id="paint" width="750" height="450" style="border: 2px solid #000000;"></canvas>
+                <canvas id="paint" width="1000" height="1000" style="border: 2px solid #000000; background: url('/static/uploads/image.jpg');"></canvas>
             </td>
-            <td>
+            <!-- <td>
                 <button id="penciltool" type="button" style="height: 25px; width: 100px;" onclick="pencil()">Карандаш</button>
                 <br>
                 <button id="linetool" type="button" style="height: 25px; width: 100px;" onclick="line()">Линия</button>
@@ -18,26 +21,30 @@
                 <br>
                 <button id="circletool" type="button" style="height: 25px; width: 100px;" onclick="circle()">Окружность</button> 
                 <br>
-                <button id="resettool" type="button" style="height: 25px; width: 100px;" onclick="reset()">Сбросить</button> 
-                </fieldset>
-            </td>
+                <button id="resettool" type="button" style="height: 25px; width: 100px;" onclick="reset()">Сбросить</button>
+            </td> -->
             </tr>
         </table></p>
         <table>
             <tr>
-                <td><button style="height: 20px; width: 80px;" onclick="fill()">Заливка</button>                
-                <td><button style="height: 20px; width: 80px" onclick="outline()">Контур</button>
+                <!-- <td><button style="height: 20px; width: 80px;" onclick="fill()">Заливка</button>                
+                <td><button style="height: 20px; width: 80px" onclick="outline()">Контур</button> -->
                 <td><label>Ширина кисти</label></td>
                 <td><button id="pixel_minus" type="button" onclick="reduce_pixel()" style="width: 25px;">-</button></td>
                 <td><button id="pixel_plus" type="button" onclick="add_pixel()" style="width: 25px;">+</button></td>
             </tr>
-            </table>
-            <hr>
-            <button name="Save layer" value=savelayer>Сохранить слой дефекта</button>
-            <p>[[[Чекбоксы с тем, какие маски отправлять]]]</p>
-            <button name="Send feedback" value=sendfeedback>Оправить фидбек</button>
-            </fieldset>
-            <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-            <script src="/static/scripts/script.js"></script>
+        </table>
+        <button name="Save layer" value=savelayer onclick="save()">Сохранить слой дефекта</button>
+        <hr>
+        <form id=sendtype>
+            <P>Выберите маски, которые вы хотите отправить</P>
+            <input type="checkbox" id="send_oil" name="to_send" value="send_oil"><label for="send_oil">Нефтепродукты</label>
+            <input type="checkbox" id="send_recess" name="to_send" value="send_recess"><label for="send_recess">Углубение</label>
+            <input type="checkbox" id="send_elongated_recess" name="to_send" value="send_elongated_recess"><label for="send_elongated_recess">Протяжённое углубление</label>
+            <input type="checkbox" id="send_rust" name="to_send" value="send_rust"><label for="send_rust">Ржавчина</label>
+        </form>
+        <button id="send_feedback"name="sendfeedback" value=send_feedback onclick="send()">Оправить</button>
+        <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+        <script src="/static/scripts/script.js"></script>
    <body>       
 </html>
