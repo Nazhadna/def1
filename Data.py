@@ -110,6 +110,7 @@ class PipeDataset(Dataset):
 '''
 By default, the following transforms are used:
 train_transform = A.Compose([A.HorizontalFlip(p=0.5),A.VerticalFlip(p=0.5),
+                             A.IAAPerspective(p=0.7,scale=(0.07,0.12)),A.Blur(p=0.5,blur_limit=6),
                              A.RandomBrightnessContrast((0,0.5),(0,0.5)),
                              A.GaussNoise()])
 test_transform = A.Compose([A.HorizontalFlip(p=0.5),A.VerticalFlip(p=0.5)])
