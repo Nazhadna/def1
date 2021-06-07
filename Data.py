@@ -23,6 +23,7 @@ def get_names():
     
 def load_img(bytes):
     img = Image.open(io.BytesIO(bytes))
+    img.save('static/uploads/image.jpg')
     img = img.convert('L')
     mean=[0.485, 0.456, 0.406] #Эти числа всё время встречаются в документации PyTorch
     std=[0.229, 0.224, 0.225] #Поэтому использованы именно они
@@ -82,15 +83,6 @@ class PipeDataset(Dataset):
         mask = torch.from_numpy(mask).long()
         
         return img,mask
-        
-        
-'''
-By default, the following transforms are used:
-train_transform = A.Compose([A.HorizontalFlip(p=0.5),A.VerticalFlip(p=0.5),
-                             A.IAAPerspective(p=0.7,scale=(0.07,0.12)),A.Blur(p=0.5,blur_limit=6),
-                             A.RandomBrightnessContrast((0,0.5),(0,0.5)),
-                             A.GaussNoise()])
-test_transform = A.Compose([A.HorizontalFlip(p=0.5),A.VerticalFlip(p=0.5)])
-'''
+
 
     
