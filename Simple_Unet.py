@@ -18,7 +18,7 @@ class Block(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, chs=(1,16,32,64,128,256)):
+    def __init__(self, chs=(3,16,32,64,128,256)):
         super().__init__()
         self.enc_blocks = nn.ModuleList([Block(chs[i], chs[i+1]) for i in range(len(chs)-1)])
         self.pool       = nn.MaxPool2d(2)
@@ -54,7 +54,7 @@ class Decoder(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, enc_chs=(1,16,32,64,128,256), dec_chs=(256, 128, 64, 32, 16), num_class=1):
+    def __init__(self, enc_chs=(3,16,32,64,128,256), dec_chs=(256, 128, 64, 32, 16), num_class=1):
         super().__init__()
         self.encoder     = Encoder(enc_chs)
         self.decoder     = Decoder(dec_chs)
