@@ -24,7 +24,7 @@ def get_names():
 def load_img(bytes):
     img = Image.open(io.BytesIO(bytes))
     img.save('static/uploads/image.jpg')
-    img = img.convert('L')
+    img = img.convert('RGB')
     mean=[0.485, 0.456, 0.406] #Эти числа всё время встречаются в документации PyTorch
     std=[0.229, 0.224, 0.225] #Поэтому использованы именно они
     t = T.Compose([T.ToTensor(),T.Normalize(mean,std)])
