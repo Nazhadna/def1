@@ -34,17 +34,17 @@ Attention! Images and corresponding masks must have the same names, e. g. 123.pn
 if __name__ == '__main__':
     IMG_PATH = sys.argv[1]
     MASK_PATH = sys.argv[2]
-    BATCH_SZ = sys.argv[3]
-    LR = sys.argv[4]
-    N_EPOCHS = sys.argv[5]
-    DICT_PATH = sys.argv[6]
+    N_CLASSES = int(sys.argv[3])
+    BATCH_SZ = int(sys.argv[4])
+    LR = float(sys.argv[5])
+    N_EPOCHS = int(sys.argv[6])
+    DICT_PATH = sys.argv[7]
     df = get_names(IMG_PATH)
-    model = UNet(num_class=5)
-    device = torch.device('cuda' if torch.cuda.is_availabe() else 'cpu')
-    model.to(device)
+    model = UNet(num_class=N_CLASSES)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train,test = train_test_split(df['id'].values,test_size = 0.2, random_state = 1337)
     train_transform = A.Compose([A.OneOf([A.HorizontalFlip(),A.VerticalFlip(),A.RandomRotate90()],p=0.8),
-                                 A.IAAPerspective(p=0.7,scale=(0.07,0.12)),A.Blur(p=0.5,blur_limit=6),
+                                 A.Perspective(p=0.7,scale=(0.07,0.12)),A.Blur(p=0.5,blur_limit=6),
                                  A.RandomBrightnessContrast((0,0.5),(0,0.5)),A.GaussNoise()])
     test_transform = A.Compose([A.OneOf([A.HorizontalFlip(),A.VerticalFlip(),A.RandomRotate90()],p=0.8),
                                A.GaussNoise()])
@@ -54,7 +54,6 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_set, batch_size = BATCH_SZ, shuffle = True)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr = LR)
-    history = fit(epoch, model, train_loader, test_loader, criterion, optimizer)
-    model.eval()
-    torch.save(model.state_dict(),DICT_PATH)
+    history,best_model_dict = fit(N_EPOCHS, model, N_CLASSES, train_loader, test_loader, criterion, optimizer, device)
+    torch.save(best_model_dict,DICT_PATH)
     

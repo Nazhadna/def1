@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 import numpy as np
+from tqdm import tqdm 
 
 def pixel_accuracy(output, mask):
     with torch.no_grad():
@@ -32,7 +33,7 @@ def mIoU(output, mask, n_classes, smooth=1e-10):
         return np.nanmean(iou_per_class)
 
 
-def fit(epochs, model, train_loader, val_loader, criterion, optimizer):
+def fit(epochs, model, nc, train_loader, val_loader, criterion, optimizer, device):
     torch.cuda.empty_cache()
     train_losses = []
     test_losses = []
@@ -40,6 +41,7 @@ def fit(epochs, model, train_loader, val_loader, criterion, optimizer):
     train_iou = []; train_acc = []
     min_loss = np.inf
     max_iou = 0
+    best_model_dict = 0
 
     model.to(device)
     #print(torch.cuda.memory_allocated())
@@ -104,10 +106,10 @@ def fit(epochs, model, train_loader, val_loader, criterion, optimizer):
             
             if(val_iou[-1]>max_iou):
                 print('New best\n')
-                torch.save(model.state_dict(),'dict-{:.3f}-{:.3f}.pth'.format(val_iou[-1],val_acc[-1]))
+                best_model_dict = model.state_dict()
                 max_iou = val_iou[-1]
         
     history = {'train_loss' : train_losses, 'val_loss': test_losses,
                'train_miou' :train_iou, 'val_miou':val_iou,
                'train_acc' :train_acc, 'val_acc':val_acc}
-    return history
+    return history,best_model_dict
