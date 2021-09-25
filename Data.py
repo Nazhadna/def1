@@ -13,7 +13,7 @@ from torchvision import transforms as T
 from PIL import Image
 
 
-def get_names():
+def get_names(IMG_PATH):
     names = []
     for _,_,files in os.walk(IMG_PATH):
         for file in files:

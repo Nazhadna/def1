@@ -34,8 +34,8 @@ def upload_file():
             img = load_img(img_bytes)
             h,w = img.shape[2],img.shape[3]
             net = UNet(num_class=5)
-            net.load_state_dict(torch.load('dict.pth'))
-            net = net.to('cpu')
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            net.load_state_dict(torch.load('dict.pth', map_location=device))
             net.eval()
             res = net(img)
             save_img(res,'static/uploads/res.png')
