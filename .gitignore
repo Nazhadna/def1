@@ -1,4 +1,4 @@
 *.pyc
 *env/*
-static/uploads/*
+static/uploads/*.png
 .vscode/*

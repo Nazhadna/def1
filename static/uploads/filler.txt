@@ -1,0 +1,3 @@
+Without this directory app doesn`t work. 
+I don`t want to pull and push temporary images.
+So this file prevents git from deleting the directory. 
