@@ -1,20 +1,24 @@
 var canvas = document.getElementById("paint");
 var ctx = canvas.getContext("2d");
+ctx.font = "22px Verdana";
 var width = $("/static/uploads/image.jpg").width();
 var height = $("/static/uploads/image.jpg").height();
-var curX, curY, prevX, prevY;
 var hold = false;
 ctx.lineWidth = 2;
 ctx.strokeStyle='#FF00000';
 ctx.fillStyle='#FF0000';
 var fill_value = true;
 var stroke_value = false;
-var canvas_data = {"pencil": [], "line": [], "rectangle": [], "circle": [], "eraser": []}
+var brushRadius = 8;
+
+var colors = ['#0000FF', '#FF0000', '#00FF00', '#FF00FF'];
+
                         
 function color(color_value){
     ctx.strokeStyle = color_value;
     ctx.fillStyle = color_value;
-    reset();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
 }    
         
 function add_pixel(){
@@ -39,159 +43,102 @@ function outline(){
     fill_value = false;
     stroke_value = true;
 }
-               
-function reset(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    canvas_data = { "pencil": [], "line": [], "rectangle": [], "circle": [], "eraser": [] }
-}
-        
-// pencil tool
-        
+
+
 function pencil(){
-        
-    canvas.onmousedown = function(e){
-        curX = e.clientX;
-        curY = e.clientY;
+
+    let curves = [];
+
+    function makePoint(x, y) {
+        return [x, y];
+    };
+
+    canvas.addEventListener("mousedown", event => {
+        const curve = [];
+        curve.color = ctx.strokeStyle;
+        curve.lineWidth = ctx.lineWidth;
+        curve.push(makePoint(event.offsetX, event.offsetY));
+        curves.push(curve);
         hold = true;
-            
-        prevX = curX;
-        prevY = curY;
-        ctx.beginPath();
-        ctx.moveTo(prevX, prevY);
-    };
-        
-    canvas.onmousemove = function(e){
+    });
+
+    canvas.addEventListener("mousemove", event => {
         if(hold){
-            curX = e.clientX;
-            curY = e.clientY;
-            draw();
+            const point = makePoint(event.offsetX, event.offsetY)
+            curves[curves.length - 1].push(point);
+            repaint(curves);
         }
-    };
-        
-    canvas.onmouseup = function(e){
+    });
+
+    canvas.addEventListener("mouseup", event => {
         hold = false;
-    };
-        
-    canvas.onmouseout = function(e){
+    });
+
+    canvas.addEventListener("mouseleave", event => {
         hold = false;
-    };
-        
-    function draw(){
-        ctx.lineTo(curX, curY);
-        ctx.stroke();
-        canvas_data.pencil.push({ "startx": prevX, "starty": prevY, "endx": curX, "endy": curY, "thick": ctx.lineWidth, "color": ctx.strokeStyle });
-    }
+    });
 }
-        
-// line tool
-        
-// function line(){
-           
-//     canvas.onmousedown = function (e){
-//         img = ctx.getImageData(0, 0, width, height);
-//         prevX = e.clientX - canvas.offsetLeft;
-//         prevY = e.clientY - canvas.offsetTop;
-//         hold = true;
-//     };
-            
-//     canvas.onmousemove = function linemove(e){
-//         if (hold){
-//             ctx.putImageData(img, 0, 0);
-//             curX = e.clientX - canvas.offsetLeft;
-//             curY = e.clientY - canvas.offsetTop;
-//             ctx.beginPath();
-//             ctx.moveTo(prevX, prevY);
-//             ctx.lineTo(curX, curY);
-//             ctx.stroke();
-//             canvas_data.line.push({ "starx": prevX, "starty": prevY, "endx": curX, "endY": curY, "thick": ctx.lineWidth, "color": ctx.strokeStyle });
-//             ctx.closePath();
-//         }
-//     };
-            
-//     canvas.onmouseup = function (e){
-//          hold = false;
-//     };
-            
-//     canvas.onmouseout = function (e){
-//          hold = false;
-//     };
-// }
-        
-// // rectangle tool
-        
-// function rectangle(){
-            
-//     canvas.onmousedown = function (e){
-//         img = ctx.getImageData(0, 0, width, height);
-//         prevX = e.clientX - canvas.offsetLeft;
-//         prevY = e.clientY - canvas.offsetTop;
-//         hold = true;
-//     };
-            
-//     canvas.onmousemove = function (e){
-//         if (hold){
-//             ctx.putImageData(img, 0, 0);
-//             curX = e.clientX - canvas.offsetLeft - prevX;
-//             curY = e.clientY - canvas.offsetTop - prevY;
-//             ctx.strokeRect(prevX, prevY, curX, curY);
-//             if (fill_value){
-//                 ctx.fillRect(prevX, prevY, curX, curY);
-//             }
-//             canvas_data.rectangle.push({ "starx": prevX, "stary": prevY, "width": curX, "height": curY, "thick": ctx.lineWidth, "stroke": stroke_value, "stroke_color": ctx.strokeStyle, "fill": fill_value, "fill_color": ctx.fillStyle });
-            
-//         }
-//     };
-            
-//     canvas.onmouseup = function(e){
-//         hold = false;
-//     };
-            
-//     canvas.onmouseout = function(e){
-//         hold = false;
-//     };
-// }
-        
-// // circle tool
-        
-// function circle(){
-            
-//     canvas.onmousedown = function (e){
-//         img = ctx.getImageData(0, 0, width, height);
-//         prevX = e.clientX - canvas.offsetLeft;
-//         prevY = e.clientY - canvas.offsetTop;
-//         hold = true;
-//     };
-            
-//     canvas.onmousemove = function (e){
-//         if (hold){
-//             ctx.putImageData(img, 0, 0);
-//             curX = e.clientX - canvas.offsetLeft;
-//             curY = e.clientY - canvas.offsetTop;
-//             ctx.beginPath();
-//             ctx.arc(Math.abs(curX + prevX)/2, Math.abs(curY + prevY)/2, Math.sqrt(Math.pow(curX - prevX, 2) + Math.pow(curY - prevY, 2))/2, 0, Math.PI * 2, true);
-//             ctx.closePath();
-//             ctx.stroke();
-//             if (fill_value){
-//                ctx.fill();
-//             }
-//             canvas_data.circle.push({ "starx": prevX, "stary": prevY, "radius": curX - prevX, "thick": ctx.lineWidth, "stroke": stroke_value, "stroke_color": ctx.strokeStyle, "fill": fill_value, "fill_color": ctx.fillStyle });
-//         }
-//     };
-            
-//     canvas.onmouseup = function (e){
-//         hold = false;
-//     };
-            
-//     canvas.onmouseout = function (e){
-//         hold = false;
-//     };
-// }
+
+function repaint(curves) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    curves.forEach((curve) => {
+        if (ctx.strokeStyle == curve.color) {
+            ctx.lineWidth = curve.lineWidth;
+            circle(curve[0]);
+            smoothCurve(curve);
+        }
+    });
+}
+
+function circle(point) {
+    ctx.beginPath();
+    ctx.arc(...point, brushRadius / 2, 0, 2 * Math.PI);
+    ctx.fill();
+}
+
+function smoothCurveBetween (p1, p2) {
+    const cp = p1.map((coord, idx) => (coord + p2[idx]) / 2);
+    ctx.quadraticCurveTo(...p1, ...cp);
+}
+
+function smoothCurve(points) {
+    ctx.beginPath();
+    ctx.lineWidth = brushRadius;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    ctx.moveTo(...points[0]);
+
+    for(let i = 1; i < points.length - 1; i++) {
+        smoothCurveBetween(points[i], points[i + 1]);
+    }
+
+    ctx.stroke();
+}
 
 function save(){
-    var filename = document.getElementById("fdbcktype").value;
-    var data = JSON.stringify(canvas_data);
+/*    var filename = document.getElementById("fdbcktype").value;
+    var data = JSON.stringify(brushRadius);
     var image = canvas.toDataURL();
     
-    $.post("/", { save_fname: filename, save_cdata: data, save_image: image });
-    alert(filename + " saved");
+    $.post("/", { save_fname: filename, save_cdata: data, save_image: image });*/
+
+    colors.forEach((color) => {
+        ctx.strokeStyle = color;
+        repaint();
+        var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        var a = document.createElement('a');
+        a.href = image;
+        a.download = 'my-canvas.jpeg';
+        document.body.appendChild(a);
+        a.click();
+    });
+    /*
+    var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    var a = document.createElement('a');
+    a.href = image;
+    a.download = 'my-canvas.jpeg';
+    document.body.appendChild(a);
+    a.click();*/
 }
